@@ -10,7 +10,46 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     fluidPage(
-      h1("LengthDistributions")
+      # Skapar en panel med sidomeny och huvudfönster
+      sidebarLayout(
+        # Skapar sidomenyn
+        sidebarPanel(
+          # Skapar rullista där art kan väljas
+          selectInput(
+            "artVal",
+            "Välj art: ",
+            choices = sort(unique(as.character(data$Art))),
+            multiple = TRUE,
+            selected = "Abborre"
+          ),
+          # Skapar slidermeny för min- och maxvärde för storlek
+          # Eftersom alternativen påverkas av andra menyval behöver de skapas i serverdelen och sedan anropas hit med uiOutput()
+          uiOutput("strlkSelection"),
+          # Slidermeny för storleksklasser
+          uiOutput("binSelection"),
+          # Slidermeny för län
+          uiOutput("länSelection"),
+          # Slidermeny för år
+          sliderInput(
+            "årVal",
+            "Välj år:",
+            min = 2003,
+            max = 2016,
+            value = c(2003, 2016)
+          ),
+          # Slidermeny för månad kan väljas.
+          sliderInput(
+            "månVal",
+            "Välj månad:",
+            min = 1,
+            max = 12,
+            value = c(1, 12)
+          )
+        ),
+        mainPanel(
+          plotOutput("distPlot"), type = "html", loader = "loader6"
+        )
+      )
     )
   )
 }
